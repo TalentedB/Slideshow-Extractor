@@ -22,11 +22,11 @@ def compare_frames(frame1, frame2):
 	total_pixels = threshold.size
 	changed_pixels = np.count_nonzero(threshold)
 	percentage_changed = (changed_pixels / total_pixels) * 100
-	# print(percentage_changed)
+	# Return the percentage changed between frames
 	return percentage_changed
 
 
-def ExtractSlidesToPDF(video_path: str = 'thevideo.mp4', output_path: str = 'slides.pdf'):
+def ExtractSlidesToPDF(video_path: str = 'thevideo.mp4', output_path: str = 'slides.pdf', threshold: int = 2):
 	# Create a VideoCapture object and read from input file
 	cap = cv2.VideoCapture(video_path)
 	pdf = FPDF()
@@ -73,7 +73,7 @@ def ExtractSlidesToPDF(video_path: str = 'thevideo.mp4', output_path: str = 'sli
 	cap.release()
 	cv2.destroyAllWindows()
 
-ExtractSlidesToPDF()
+ExtractSlidesToPDF(threshold=3)
 
 
 
