@@ -37,6 +37,7 @@ def compare_frames(frame1, frame2):
 
 
 def ExtractSlidesToPDF(video_path: str = 'thevideo.mp4', output_path: str = 'slides.pdf', threshold: int = 3):
+
 	# Create a VideoCapture object and read from input file
 	print("Extracting Slides...")
 	cap = cv2.VideoCapture(video_path)
