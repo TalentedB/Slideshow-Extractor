@@ -4,8 +4,18 @@ import numpy as np
 from fpdf import FPDF
 from time import sleep
 import os
+from pytube import YouTube
 
 
+def Download(link: str):
+    youtubeObject = YouTube(link)
+    youtubeObject = youtubeObject.streams.get_highest_resolution()
+    try:
+        youtubeObject.download("temp", filename="tempvideo.mp4")
+    except:
+        print("An error has occurred downloading the video")
+        exit(0)
+    print("Downloaded video successfully")
 
 
 
@@ -26,8 +36,9 @@ def compare_frames(frame1, frame2):
 	return percentage_changed
 
 
-def ExtractSlidesToPDF(video_path: str = 'thevideo.mp4', output_path: str = 'slides.pdf', threshold: int = 2):
+def ExtractSlidesToPDF(video_path: str = 'thevideo.mp4', output_path: str = 'slides.pdf', threshold: int = 3):
 	# Create a VideoCapture object and read from input file
+	print("Extracting Slides...")
 	cap = cv2.VideoCapture(video_path)
 	pdf = FPDF()
 
@@ -73,7 +84,41 @@ def ExtractSlidesToPDF(video_path: str = 'thevideo.mp4', output_path: str = 'sli
 	cap.release()
 	cv2.destroyAllWindows()
 
-ExtractSlidesToPDF(threshold=3)
+def initProgram():
+	# User Chooses Options:
+	print("Welcome to the Slide Extractor!")
+	print("Please choose an option:")
+	print("1. Extract Slides from Video (Local)")
+	print("2. Extract video from youtube link")
+	print("3. Exit")
+	choice = input("Enter your choice: ")
+	if choice == "1":
+		threshold = input("Enter the threshold (default is 3): ")
+		video_path = input("Enter the video path: ")
+		ExtractSlidesToPDF(threshold=threshold, video_path=video_path)
+		print("Exported Slides Successfully")
+		exit(0)
+	if choice == "2":
+		threshold = input("Enter the threshold (default is 3): ")
+		video_path = input("Enter the video link (youtube): ")
+		Download(link=video_path)
+		ExtractSlidesToPDF(threshold=threshold, video_path="temp/tempvideo.mp4")
+		os.remove("temp/tempvideo.mp4")
+		print("Exported Slides Successfully")
+		exit(0)
+	if choice == "3":
+		print("Exiting...")
+		exit(0)
+	else:
+		print("Invalid choice, please try again")
+		initProgram()
+	
+
+
+initProgram()
+
+
+# ExtractSlidesToPDF(threshold=3, video_path="Chapter 1.mp4")
 
 
 
