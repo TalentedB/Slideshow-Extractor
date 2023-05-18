@@ -39,19 +39,13 @@ pip install -r requirements.txt
 To extract slides from a YouTube video:
 
 ```bash
-python main.py
-2
-2
-<video link>
+python main.py --youtube <youtube_link> --threshold <threshold> --output <output_path>
 ```
 
 To extract slides from a local video file:
 
 ```bash
-python main.py
-1
-2
-<video path>
+python main.py --file <video_path> --threshold <threshold> --output <output_path>
 ```
 
 By default, the extracted slides will be saved as a PDF file in the project directory.
