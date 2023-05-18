@@ -52,6 +52,7 @@ def ExtractSlidesToPDF(video_path: str = 'thevideo.mp4', output_path: str = 'sli
 	# Check if camera opened successfully
 	if (cap.isOpened()== False):
 		print("Error opening video file")
+		exit(1)
 
 
 	# Get first frame
