@@ -5,7 +5,7 @@ from fpdf import FPDF
 from time import sleep
 import os
 from pytube import YouTube
-
+import argparse
 
 def Download(link: str):
     youtubeObject = YouTube(link)
@@ -38,13 +38,16 @@ def compare_frames(frame1, frame2):
 
 def ExtractSlidesToPDF(video_path: str = 'thevideo.mp4', output_path: str = 'slides.pdf', threshold: int = 2):
 	
-	if threshold == "":
-		threshold = 2
+	threshold = threshold or 2
+	video_path = video_path or 'thevideo.mp4'
+	output_path = output_path or 'slides.pdf'
+
 
 	# Create a VideoCapture object and read from input file
 	print("Extracting Slides...")
 	cap = cv2.VideoCapture(video_path)
 	pdf = FPDF()
+	image_list = []
 
 	# Check if camera opened successfully
 	if (cap.isOpened()== False):
@@ -59,7 +62,7 @@ def ExtractSlidesToPDF(video_path: str = 'thevideo.mp4', output_path: str = 'sli
 
 
 	# Read until video is completed
-	image_list = []
+	
 	counter = 0
 	while(cap.isOpened()):
 		counter += 1
@@ -118,7 +121,37 @@ def initProgram():
 	
 
 
-initProgram()
 
+
+def main():
+	parser = argparse.ArgumentParser(description='Video Extraction Script')
+	group = parser.add_mutually_exclusive_group(required=True)
+	group.add_argument('--youtube', '-y', metavar='<video_url>', help='URL of the YouTube video')
+	group.add_argument('--file', '-f', metavar='<video_path>', help='Path to the video file')
+	parser.add_argument('--threshold', '-t', metavar='<value>', type=float, help='Threshold value for slide change detection')
+	parser.add_argument('--output', '-o', metavar='<output_path>', help='Path to the output file')
+
+	args = parser.parse_args()
+
+	if args.youtube:	
+		# Process YouTube video URL
+		Download(link=args.youtube)
+		ExtractSlidesToPDF(threshold=args.threshold, video_path="temp/tempvideo.mp4", output_path=args.output)
+		os.remove("temp/tempvideo.mp4")
+
+	elif args.file:
+		# Process Video file path
+		ExtractSlidesToPDF(threshold=args.threshold, video_path=args.file, output_path=args.output)
+	else:
+		# ? Invalid arguments passed and or missing arguemnts
+		print('Invalid arguments')
+		exit(1)
+
+		
+
+
+
+if __name__ == '__main__':
+	main()
 
 
